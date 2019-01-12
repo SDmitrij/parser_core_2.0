@@ -41,6 +41,7 @@ class IndexController extends IndexCore
 
     /**
      * @param array $files
+     * @throws \Exception
      */
     public function indexAction(array $files)
     {
@@ -53,7 +54,7 @@ class IndexController extends IndexCore
     /**
      * @param array $files
      */
-    public function excludeOrIncludeFilesToIndexAction(array $files)
+    public function excludeOrIncludeFilesToIndexAction(array & $files)
     {
         parent::excludeOrIncludeFilesToIndex($files);
     }

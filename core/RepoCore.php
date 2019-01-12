@@ -56,7 +56,7 @@ class RepoCore
         $query = $this->DB->query(" CREATE DATABASE IF NOT EXISTS " . $this->DB_NAME . "");
         if ($query == false)
         {
-            throw new \Exception("Can't create a database\n");
+            throw new \Exception("Failed to create an entry database<br/>");
         }
     }
 
@@ -76,33 +76,39 @@ class RepoCore
 
         if ($query == false)
         {
-            throw new \Exception("Can't create already indexed files table\n");
+            throw new \Exception("Failed to create table with already indexed files<br/>");
         }
 
     }
 
     /**
      * @param string $filename
-     * @return bool|\mysqli_result
+     * @throws \Exception
      */
     public function createTableStrings(string $filename)
     {
-        return $this->DB->query("CREATE TABLE IF NOT EXISTS $this->DB_NAME.$filename
-        (id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-         file_unique_key VARCHAR(32) NOT NULL,
-         string_of_file VARCHAR(200) NOT NULL)");
+        if ($this->DB->query("CREATE TABLE IF NOT EXISTS $this->DB_NAME.$filename
+           (id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            file_unique_key VARCHAR(32) NOT NULL,
+            string_of_file VARCHAR(200) NOT NULL)") == false)
+        {
+            throw new \Exception("Failed to create table with strings of file: " . $filename . "<br/>");
+        }
     }
 
     /**
      * @param string $filename
-     * @return bool|\mysqli_result
+     * @throws \Exception
      */
     public function createTableWords(string $filename)
     {
-        return $this->DB->query("CREATE TABLE IF NOT EXISTS $this->DB_NAME.$this->WRD_PREFIX.$filename
-        (id INT(10) UNSIGNED AUTO INCREMENT PRIMARY KEY,
-         file_unique_key VARCHAR(32) NOT NULL,
-         word_of_file VARCHAR(50) NOT NULL)");
+        if ($this->DB->query("CREATE TABLE IF NOT EXISTS $this->DB_NAME.$this->WRD_PREFIX"."$filename
+           (id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            file_unique_key VARCHAR(32) NOT NULL,
+            word_of_file VARCHAR(50) NOT NULL)") == false)
+        {
+            throw new \Exception("Failed to create table with words of file: " . $filename . "<br/>");
+        }
     }
 
     /**
@@ -111,72 +117,81 @@ class RepoCore
      * @param string $fileUniqueKey
      * @param int $fileSize
      * @param int $isIndex
-     * @return bool|\mysqli_result
+     * @throws \Exception
      */
     public function
     insertIntoAlreadyIndex(string $filePath, string $fileHash, string $fileUniqueKey, int $fileSize, int $isIndex)
     {
-        return $this->DB->query("INSERT INTO $this->DB_NAME.$this->ALREADY_IDX
-        (file_path, file_hash, file_unique_key, file_size, is_index) 
-        VALUES ('$filePath', '$fileHash', '$fileUniqueKey', $fileSize, $isIndex)");
+        $filePath = $this->DB->real_escape_string(trim($filePath));
+        if ($this->DB->query("INSERT INTO $this->DB_NAME.$this->ALREADY_IDX
+           (file_path, file_hash, file_unique_key, file_size, is_index) 
+            VALUES ('$filePath', '$fileHash', '$fileUniqueKey', $fileSize, $isIndex)") == false)
+        {
+            throw new \Exception("Failed to write a file's data " . $filePath . "<br/>");
+        }
     }
 
     /**
      * @param string $filename
      * @param string $fileUniqueKey
      * @param string $strOfFile
-     * @return bool|\mysqli_result
+     * @throws \Exception
      */
     public function insertIntoTableStrings(string $filename, string $fileUniqueKey, string $strOfFile)
     {
         $strOfFile = $this->DB->real_escape_string(trim($strOfFile));
 
-        return $this->DB->query("INSERT INTO $this->DB_NAME.$filename
-        (file_unique_key, string_of_file) VALUES ('$fileUniqueKey', '$strOfFile')");
+        if ($this->DB->query("INSERT INTO $this->DB_NAME.$filename
+           (file_unique_key, string_of_file) VALUES ('$fileUniqueKey', '$strOfFile')") == false)
+        {
+            throw new \Exception("Failed to insert a string of file: " . $filename . "<br/>");
+        }
     }
 
     /**
      * @param string $filename
      * @param string $fileUniqueKey
      * @param string $word
-     * @return bool|\mysqli_result
+     * @throws \Exception
      */
     public function insertIntoTableWords(string $filename, string $fileUniqueKey, string $word)
     {
-        return $this->DB->query("INSERT INTO $this->DB_NAME.$this->WRD_PREFIX.$filename
-        (file_unique_key, word_of_file) VALUES ('$fileUniqueKey', '$word')");
+        $word = $this->DB->real_escape_string($word);
+        if ($this->DB->query("INSERT INTO $this->DB_NAME.$this->WRD_PREFIX"."$filename
+            (file_unique_key, word_of_file) VALUES ('$fileUniqueKey', '$word')") == false)
+        {
+            throw new \Exception("Failed to insert a word of file: " . $filename . "<br/>");
+        }
     }
 
     /**
      * @param string $filename
      * @param string $fileUniqueKey
-     * @return bool|\mysqli_result
+     * @throws \Exception
      */
     public function deleteFilesRepo(string $filename, string $fileUniqueKey)
     {
-        return
-            $this->DB->query("DROP TABLE IF EXISTS $this->DB_NAME.$filename")
-            and
-            $this->DB->query("DROP TABLE IF EXISTS $this->DB_NAME.$this->WRD_PREFIX.$filename")
-            and
-            $this->DB->query("DELETE FROM $this->DB_NAME.$this->ALREADY_IDX WHERE file_unique_key = '$fileUniqueKey'");
+        if (($this->DB->query("DROP TABLE IF EXISTS $this->DB_NAME.$filename")
+            &&
+            $this->DB->query("DROP TABLE IF EXISTS $this->DB_NAME.$this->WRD_PREFIX"."$filename")
+            &&
+            $this->DB->query("DELETE FROM $this->DB_NAME.$this->ALREADY_IDX WHERE file_unique_key = '$fileUniqueKey'")) == false)
+        {
+            throw new \Exception("Failed to delete file: " . $filename . "<br/>");
+        }
     }
 
     /**
      * @param string $fileUniqueKey
-     * @param bool $allFiles
-     * @return array|mixed
+     * @return array
      */
-    public function getFilesOrFileMainData(bool $allFiles, string $fileUniqueKey = ''): array
+    public function getFileMainData(string $fileUniqueKey): array
     {
-        if ($allFiles) {
-            $query = $this->DB->query("SELECT * FROM $this->DB_NAME.$this->ALREADY_IDX");
-        } else {
-            $query =
-                $this
-                ->DB
-                ->query("SELECT * FROM $this->DB_NAME.$this->ALREADY_IDX WHERE file_unique_key = '$fileUniqueKey'");
-        }
+
+        $query =
+            $this
+            ->DB
+            ->query("SELECT * FROM $this->DB_NAME.$this->ALREADY_IDX WHERE file_unique_key = '$fileUniqueKey'");
 
         if ($query != false)
         {
@@ -191,19 +206,38 @@ class RepoCore
 
     /**
      * @param string $fileUniqueKey
+     * @return bool
+     */
+    public function checkIfFileAlreadyIndexed(string $fileUniqueKey): bool
+    {
+        $check =
+            $this
+            ->DB
+            ->query("SELECT EXISTS(SELECT id FROM $this->DB_NAME.$this->ALREADY_IDX WHERE file_unique_key = '$fileUniqueKey' AND is_index = 1)");
+        var_dump($check);
+
+        if ($check !== false && $check->num_rows !== NULL)
+        {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
+     * @param string $fileUniqueKey
      * @param int $indexStatus
-     * @return bool|\mysqli_result
+     * @throws \Exception
      */
     public function setIsIndexStatus(string $fileUniqueKey, int $indexStatus)
     {
-        return
-            $this
+        if ($this
             ->DB
-            ->query("UPDATE $this->DB_NAME.$this->ALREADY_IDX SET is_index = $indexStatus WHERE file_unique_key = $fileUniqueKey");
+            ->query("UPDATE $this->DB_NAME.$this->ALREADY_IDX SET is_index = $indexStatus WHERE file_unique_key = '$fileUniqueKey'") == false)
+        {
+            throw new \Exception("Failed to update file's status<br/>");
+        }
     }
-
-
-
-
 
 }

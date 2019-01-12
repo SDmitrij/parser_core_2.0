@@ -10,6 +10,11 @@ class FileCore
     private $filePath;
 
     /**
+     * @var $fileName
+     */
+    private $fileName;
+
+    /**
      * @var string $fileHash
      */
     private $fileHash;
@@ -36,6 +41,7 @@ class FileCore
     public function __construct(string $path)
     {
         $this->filePath = $path;
+        $this->fileName = basename($this->filePath,'.txt');
         $this->fileHash = hash_file('md5', $this->filePath);
         $this->fileUniqueKey = hash('md5', $this->filePath);
         $this->fileSize = filesize($this->filePath);
@@ -50,13 +56,41 @@ class FileCore
     }
 
     /**
+     * @return string
+     */
+    public function getFileName(): string
+    {
+        return $this->fileName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileUniqueKey(): string
+    {
+        return $this->fileUniqueKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileHash(): string
+    {
+        return $this->fileHash;
+    }
+
+    public function getFileSize(): int
+    {
+        return $this->fileSize;
+    }
+
+    /**
      * @param object $filesRepo
-     * @return bool|\mysqli_result
+     * @throws \Exception
      */
     public function setFileMainData(object & $filesRepo)
     {
-        return
-            $filesRepo
+        $filesRepo
             ->insertIntoAlreadyIndex($this->filePath, $this->fileHash, $this->fileUniqueKey, $this->fileSize, $this->isIndex);
 
     }

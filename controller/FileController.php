@@ -43,10 +43,12 @@ class FileController
     {
         foreach ($this->files as $file)
         {
-            if ($file->setFileMainData($this->filesRepo) == false)
-            {
-                throw new \Exception("Can't write a main information of " . $file->getFilePath() . "\n");
+            try {
+                $file->setFileMainData($this->filesRepo);
+            } catch (\Exception $exception) {
+                echo $exception->getMessage();
             }
+
         }
 
     }
