@@ -28,12 +28,12 @@ if (!empty($paths))
     $indexing->setFilesRepo($filesRepo);
     $filesController->initFilesObjects($paths);
     $filesController->setFilesRepo($filesRepo);
+
     try {
-        //print_r($filesController->files);
         $indexing->excludeOrIncludeFilesToIndexAction($filesController->files);
-        $filesController->setFilesMainDataAction();
         if(!empty($filesController->files))
         {
+            $filesController->setFilesMainDataAction();
             $indexing->indexAction($filesController->files);
         }
     } catch (\Exception $exception) {

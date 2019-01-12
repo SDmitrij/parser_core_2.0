@@ -214,7 +214,6 @@ class RepoCore
             $this
             ->DB
             ->query("SELECT EXISTS(SELECT id FROM $this->DB_NAME.$this->ALREADY_IDX WHERE file_unique_key = '$fileUniqueKey' AND is_index = 1)");
-        var_dump($check);
 
         if ($check !== false && $check->num_rows !== NULL)
         {

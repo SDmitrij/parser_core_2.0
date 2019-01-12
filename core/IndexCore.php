@@ -48,24 +48,19 @@ class IndexCore
     /**
      * @param array $files
      */
-    protected function excludeOrIncludeFilesToIndex(array $files)
+    protected function excludeOrIncludeFilesToIndex(array & $files)
     {
-        foreach ($files as $file)
+        foreach ($files as $key => $file)
         {
             if ($this->filesRepo->checkIfFileAlreadyIndexed($file->getFileUniqueKey()) == true)
             {
                 // Get prev. file's data
                 $prevFileData = $this->filesRepo->getFileMainData($file->getFileUniqueKey());
-                if ($prevFileData['file_hash'] == $file->getFileHash()
-                    && $prevFileData['file_size'] == $file->getFileSize())
+                if ($prevFileData['file_hash'] == $file->getFileHash() && $prevFileData['file_size'] == $file->getFileSize())
                 {
-                    unset($file);
+                    unset($files[$key]);
                 }
             }
         }
     }
-
-
-
-
 }
