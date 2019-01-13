@@ -123,6 +123,7 @@ class RepoCore
     insertIntoAlreadyIndex(string $filePath, string $fileHash, string $fileUniqueKey, int $fileSize, int $isIndex)
     {
         $filePath = $this->DB->real_escape_string(trim($filePath));
+
         if ($this->DB->query("INSERT INTO $this->DB_NAME.$this->ALREADY_IDX
            (file_path, file_hash, file_unique_key, file_size, is_index) 
             VALUES ('$filePath', '$fileHash', '$fileUniqueKey', $fileSize, $isIndex)") == false)
@@ -157,6 +158,7 @@ class RepoCore
     public function insertIntoTableWords(string $filename, string $fileUniqueKey, string $word)
     {
         $word = $this->DB->real_escape_string($word);
+
         if ($this->DB->query("INSERT INTO $this->DB_NAME.$this->WRD_PREFIX"."$filename
             (file_unique_key, word_of_file) VALUES ('$fileUniqueKey', '$word')") == false)
         {
@@ -213,14 +215,17 @@ class RepoCore
         $check =
             $this
             ->DB
-            ->query("SELECT EXISTS(SELECT id FROM $this->DB_NAME.$this->ALREADY_IDX WHERE file_unique_key = '$fileUniqueKey' AND is_index = 1)");
+            ->query("SELECT EXISTS(SELECT id FROM $this->DB_NAME.$this->ALREADY_IDX WHERE file_unique_key = '$fileUniqueKey')");
 
-        if ($check !== false && $check->num_rows !== NULL)
+        $result = $check->fetch_array(MYSQLI_NUM);
+
+        if ($result != NULL && $result[0] == '1')
         {
             return true;
         } else {
             return false;
         }
+
 
     }
 

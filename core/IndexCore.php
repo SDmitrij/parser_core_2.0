@@ -2,6 +2,10 @@
 
 namespace core;
 
+/**
+ * Class IndexCore
+ * @package core
+ */
 class IndexCore
 {
     /**
@@ -47,20 +51,33 @@ class IndexCore
 
     /**
      * @param array $files
+     * @throws \Exception
      */
     protected function excludeOrIncludeFilesToIndex(array & $files)
     {
+        // Go through file objects
         foreach ($files as $key => $file)
         {
             if ($this->filesRepo->checkIfFileAlreadyIndexed($file->getFileUniqueKey()) == true)
             {
                 // Get prev. file's data
                 $prevFileData = $this->filesRepo->getFileMainData($file->getFileUniqueKey());
+
+                // If files are equal
                 if ($prevFileData['file_hash'] == $file->getFileHash() && $prevFileData['file_size'] == $file->getFileSize())
                 {
                     unset($files[$key]);
+                } else {
+                    // Delete file's info 'cause it modified
+                    try {
+                        $this->filesRepo->deleteFilesRepo($file->getFileName(), $file->getFileUniqueKey());
+                    } catch (\Exception $exception) {
+                        echo $exception->getMessage();
+                    }
+
                 }
             }
         }
     }
+
 }

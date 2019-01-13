@@ -79,6 +79,9 @@ class FileCore
         return $this->fileHash;
     }
 
+    /**
+     * @return int
+     */
     public function getFileSize(): int
     {
         return $this->fileSize;
@@ -104,6 +107,5 @@ class FileCore
         $this->isIndex = $isIndex;
         $filesRepo->setIsIndexStatus($this->fileUniqueKey, $isIndex);
     }
-
 
 }

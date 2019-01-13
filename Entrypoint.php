@@ -30,12 +30,14 @@ if (!empty($paths))
     $filesController->setFilesRepo($filesRepo);
 
     try {
-        $indexing->excludeOrIncludeFilesToIndexAction($filesController->files);
+
         if(!empty($filesController->files))
         {
+            $indexing->excludeOrIncludeFilesToIndexAction($filesController->files);
             $filesController->setFilesMainDataAction();
             $indexing->indexAction($filesController->files);
         }
+
     } catch (\Exception $exception) {
         echo $exception->getMessage();
     }
