@@ -51,8 +51,14 @@ class IndexController extends IndexCore
         }
     }
 
+    public function searchAction()
+    {
+        parent::searcher();
+    }
+
     /**
      * @param array $files
+     * @throws \Exception
      */
     public function excludeOrIncludeFilesToIndexAction(array & $files)
     {

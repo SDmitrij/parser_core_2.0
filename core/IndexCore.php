@@ -49,6 +49,11 @@ class IndexCore
         }
     }
 
+    protected function searcher()
+    {
+
+    }
+
     /**
      * @param array $files
      * @throws \Exception
@@ -80,4 +85,5 @@ class IndexCore
         }
     }
 
+    
 }

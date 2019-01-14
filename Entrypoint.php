@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '\render_helper.php';
 function autoLoader($className)
 {
     $className = ltrim($className, '\\');
@@ -18,9 +19,13 @@ spl_autoload_register('autoLoader');
 // Our directory with files to index
 $dir = __DIR__ . '\texts';
 
+
+
+// Init indexing process
 $indexing = new \controller\IndexController();
 $paths = $indexing->readFolder($dir);
-
+$renderData = [];
+// If paths are not empty start indexing
 if (!empty($paths))
 {
     $filesRepo = new \core\RepoCore('localhost', 'root');
@@ -33,7 +38,9 @@ if (!empty($paths))
 
         if(!empty($filesController->files))
         {
+            $renderData['current_directory_files'] = $filesController->files;
             $indexing->excludeOrIncludeFilesToIndexAction($filesController->files);
+            $renderData['new_files_to_index'] = $filesController->files;
             $filesController->setFilesMainDataAction();
             $indexing->indexAction($filesController->files);
         }
@@ -44,3 +51,5 @@ if (!empty($paths))
 
 }
 
+// Render html
+renderMainArea($renderData);
