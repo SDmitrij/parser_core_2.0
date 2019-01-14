@@ -51,9 +51,12 @@ class IndexController extends IndexCore
         }
     }
 
-    public function searchAction()
+    /**
+     * @param string $wordToSrc
+     */
+    public function searchAction(string $wordToSrc)
     {
-        parent::searcher();
+        parent::searcher($wordToSrc);
     }
 
     /**

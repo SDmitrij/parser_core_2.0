@@ -49,7 +49,10 @@ class IndexCore
         }
     }
 
-    protected function searcher()
+    /**
+     * @param string $wordToSrc
+     */
+    protected function searcher(string $wordToSrc)
     {
 
     }
@@ -85,5 +88,5 @@ class IndexCore
         }
     }
 
-    
+
 }

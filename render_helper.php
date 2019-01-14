@@ -11,31 +11,35 @@ function renderMainArea(array $renderData)
     $filesHtmlGenerator = function (string $key, array & $renderData): string {
 
         $blockName = str_replace('_', ' ', $key);
-         $content = "<div class='parser-core_$key'>
+        $content = "<div class='parser-core_$key'>
              <h3>$blockName:</h3><ul>";
 
-         foreach ($renderData[$key] as $file)
-         {
-             $content .= "<li>" . $file->getFilePath() . "</li>";
-         }
-         $content .= "</ul></div>";
+        foreach ($renderData[$key] as $file)
+        {
+            $content .= "<li>" . $file->getFilePath() . "</li>";
+        }
+        $content .= "</ul></div>";
 
-         return $content;
+        return $content;
     };
 
+    // File's data to render
     $htmlContent = '';
-    $renderKeys = array_keys($renderData);
-    foreach ($renderKeys as $renderKey)
+
+    if (!empty($renderData))
     {
-        if (!empty($renderData[$renderKey]))
+        $renderKeys = array_keys($renderData);
+        foreach ($renderKeys as $renderKey)
         {
-            $htmlContent .= $filesHtmlGenerator($renderKey, $renderData);
+            if (!empty($renderData[$renderKey]))
+            {
+                $htmlContent .= $filesHtmlGenerator($renderKey, $renderData);
+            }
+
         }
 
-    }
+    } else {
 
-    if ($htmlContent == '')
-    {
         $htmlContent .= "<div class='parser-core_empty'><h3>There are no files or something wrong with parser!</h3></div>";
     }
 
@@ -52,10 +56,9 @@ function renderMainArea(array $renderData)
         <div class='parser-core_search_block'>
             <p>Input a word:</p>
             <input class='parser-core_search_by_word_input' type='text'>
-            <button class='parser-core_input_send_data' onclick=''>Search!</button>
+            <button class='parser-core_input_send_data'>Search!</button>
         </div>
         </div><br /></div>
-        <div style=\"clear:both\">
+        <div style=\"clear:both\"> 
         </div>";
-
 }
