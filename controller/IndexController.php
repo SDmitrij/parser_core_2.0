@@ -53,10 +53,11 @@ class IndexController extends IndexCore
 
     /**
      * @param string $wordToSrc
+     * @param array $files
      */
-    public function searchAction(string $wordToSrc)
+    public function searchAction(string $wordToSrc, array $files)
     {
-        parent::searcher($wordToSrc);
+        parent::searcher($wordToSrc, $files);
     }
 
     /**

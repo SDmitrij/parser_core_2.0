@@ -51,10 +51,21 @@ class IndexCore
 
     /**
      * @param string $wordToSrc
+     * @param array $files
+     * @return array
      */
-    protected function searcher(string $wordToSrc)
+    protected function searcher(string $wordToSrc, array $files)
     {
+        $filesData = [];
+        foreach ($files as $file)
+        {
+            if ($this->filesRepo->checkIfFileAlreadyIndexed($file->getFileUniqueKey()) == true)
+            {
+                $filesData[] = $this->filesRepo->searchInFiles($wordToSrc, $file->getFileName());
+            }
+        }
 
+        return $filesData;
     }
 
     /**

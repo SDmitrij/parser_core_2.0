@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '\render_helper.php';
-require_once __DIR__ . '\request_resolver.php';
 
 function autoLoader($className)
 {

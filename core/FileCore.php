@@ -2,6 +2,10 @@
 
 namespace core;
 
+/**
+ * Class FileCore
+ * @package core
+ */
 class FileCore
 {
     /**

@@ -11,8 +11,7 @@ function renderMainArea(array $renderData)
     $filesHtmlGenerator = function (string $key, array & $renderData): string {
 
         $blockName = str_replace('_', ' ', $key);
-        $content = "<div class='parser-core_$key'>
-             <h3>$blockName:</h3><ul>";
+        $content = "<div class='parser-core_$key'><h3>$blockName:</h3><ul>";
 
         foreach ($renderData[$key] as $file)
         {

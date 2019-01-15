@@ -90,7 +90,8 @@ class RepoCore
         if ($this->DB->query("CREATE TABLE IF NOT EXISTS $this->DB_NAME.$filename
            (id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             file_unique_key VARCHAR(32) NOT NULL,
-            string_of_file VARCHAR(200) NOT NULL)") == false)
+            string_of_file VARCHAR(200) NOT NULL,
+            INDEX str_idx (string_of_file))") == false)
         {
             throw new \Exception("Failed to create table with strings of file: " . $filename . "<br/>");
         }
@@ -105,7 +106,8 @@ class RepoCore
         if ($this->DB->query("CREATE TABLE IF NOT EXISTS $this->DB_NAME.$this->WRD_PREFIX"."$filename
            (id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             file_unique_key VARCHAR(32) NOT NULL,
-            word_of_file VARCHAR(50) NOT NULL)") == false)
+            word_of_file VARCHAR(50) NOT NULL,
+            INDEX wrd_idx (word_of_file))") == false)
         {
             throw new \Exception("Failed to create table with words of file: " . $filename . "<br/>");
         }
@@ -241,6 +243,29 @@ class RepoCore
             ->query("UPDATE $this->DB_NAME.$this->ALREADY_IDX SET is_index = $indexStatus WHERE file_unique_key = '$fileUniqueKey'") == false)
         {
             throw new \Exception("Failed to update file's status<br/>");
+        }
+    }
+
+    /**
+     * @param string $wordToSrc
+     * @param string $fileName
+     * @return array
+     */
+    public function searchInFiles(string $wordToSrc, string $fileName):array
+    {
+        $query = $this->DB->query("SELECT file_unique_key FROM $this->DB_NAME.$this->WRD_PREFIX"."$fileName WHERE wrd_idx = '$wordToSrc'");
+
+        if ($query !== false)
+        {
+            $result = $query->fetch_array(MYSQLI_NUM);
+
+            if ($result !== NULL)
+            {
+                return $result;
+            } else {
+
+                return [];
+            }
         }
     }
 
