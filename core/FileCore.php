@@ -95,7 +95,7 @@ class FileCore
      * @param object $filesRepo
      * @throws \Exception
      */
-    public function setFileMainData(object & $filesRepo)
+    public function setFileMainData(object $filesRepo)
     {
         $filesRepo
             ->insertIntoAlreadyIndex($this->filePath, $this->fileHash, $this->fileUniqueKey, $this->fileSize, $this->isIndex);
@@ -106,7 +106,7 @@ class FileCore
      * @param object $filesRepo
      * @param int $isIndex
      */
-    public function setFileRepoIsIndexStatus(object & $filesRepo, int $isIndex)
+    public function setFileRepoIsIndexStatus(object $filesRepo, int $isIndex)
     {
         $this->isIndex = $isIndex;
         $filesRepo->setIsIndexStatus($this->fileUniqueKey, $isIndex);

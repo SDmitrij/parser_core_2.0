@@ -4,7 +4,7 @@ $(function () {
         if (sendData != null && sendData !== '') {
             console.log(sendData);
             $.ajax({
-                url: 'request_resolver.php',
+                url: 'helper.php',
                 type: 'post',
                 dataType: 'json',
                 data: {wordToSearch: sendData},

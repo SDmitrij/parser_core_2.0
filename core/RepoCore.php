@@ -91,6 +91,7 @@ class RepoCore
            (id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             file_unique_key VARCHAR(32) NOT NULL,
             string_of_file VARCHAR(200) NOT NULL,
+            num_of_line INT(10) NOT NULL,
             INDEX str_idx (string_of_file))") == false)
         {
             throw new \Exception("Failed to create table with strings of file: " . $filename . "<br/>");
@@ -107,6 +108,7 @@ class RepoCore
            (id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             file_unique_key VARCHAR(32) NOT NULL,
             word_of_file VARCHAR(50) NOT NULL,
+            num_of_line INT(10) NOT NULL,
             INDEX wrd_idx (word_of_file))") == false)
         {
             throw new \Exception("Failed to create table with words of file: " . $filename . "<br/>");
@@ -138,14 +140,15 @@ class RepoCore
      * @param string $filename
      * @param string $fileUniqueKey
      * @param string $strOfFile
+     * @param int $lineNum
      * @throws \Exception
      */
-    public function insertIntoTableStrings(string $filename, string $fileUniqueKey, string $strOfFile)
+    public function insertIntoTableStrings(string $filename, string $fileUniqueKey, string $strOfFile, int $lineNum)
     {
         $strOfFile = $this->DB->real_escape_string(trim($strOfFile));
 
         if ($this->DB->query("INSERT INTO $this->DB_NAME.$filename
-           (file_unique_key, string_of_file) VALUES ('$fileUniqueKey', '$strOfFile')") == false)
+           (file_unique_key, string_of_file, num_of_line) VALUES ('$fileUniqueKey', '$strOfFile', $lineNum)") == false)
         {
             throw new \Exception("Failed to insert a string of file: " . $filename . "<br/>");
         }
@@ -155,14 +158,15 @@ class RepoCore
      * @param string $filename
      * @param string $fileUniqueKey
      * @param string $word
+     * @param int $lineNum
      * @throws \Exception
      */
-    public function insertIntoTableWords(string $filename, string $fileUniqueKey, string $word)
+    public function insertIntoTableWords(string $filename, string $fileUniqueKey, string $word, int $lineNum)
     {
         $word = $this->DB->real_escape_string($word);
 
         if ($this->DB->query("INSERT INTO $this->DB_NAME.$this->WRD_PREFIX"."$filename
-            (file_unique_key, word_of_file) VALUES ('$fileUniqueKey', '$word')") == false)
+            (file_unique_key, word_of_file, num_of_line) VALUES ('$fileUniqueKey', '$word', $lineNum)") == false)
         {
             throw new \Exception("Failed to insert a word of file: " . $filename . "<br/>");
         }
@@ -251,22 +255,44 @@ class RepoCore
      * @param string $fileName
      * @return array
      */
-    public function searchInFiles(string $wordToSrc, string $fileName):array
+    public function searchInFilesWords(string $wordToSrc, string $fileName):array
     {
-        $query = $this->DB->query("SELECT file_unique_key FROM $this->DB_NAME.$this->WRD_PREFIX"."$fileName WHERE wrd_idx = '$wordToSrc'");
 
-        if ($query !== false)
+        $query = $this->DB->query("SELECT file_unique_key FROM $this->DB_NAME.$this->WRD_PREFIX"."$fileName WHERE word_of_file = '$wordToSrc' LIMIT 1");
+
+        $result = $query->fetch_array(MYSQLI_ASSOC);
+
+        if ($result !== NULL)
         {
-            $result = $query->fetch_array(MYSQLI_NUM);
 
-            if ($result !== NULL)
+            $query = $this->DB->query("SELECT num_of_line FROM $this->DB_NAME.$this->WRD_PREFIX"."$fileName WHERE word_of_file = '$wordToSrc'");
+            $numLines = [];
+            for ($i = 0; $i < $query->num_rows; $i++)
             {
-                return $result;
-            } else {
-
-                return [];
+                $numLines[$i] = $query->fetch_array(MYSQLI_NUM)[0];
             }
+
+            $result['num_lines'] = $numLines;
+
+            return $result;
+
+        } else {
+
+            return [];
         }
+    }
+
+    /**
+     * @param string $filename
+     * @param string $fileUniqueKey
+     * @param string $numLines
+     */
+    public function searchInFilesStrings(string $filename, string $fileUniqueKey, string $numLines)
+    {
+        $query = $this->DB->query("SELECT string_of_file FROM $this->DB_NAME.$filename WHERE file_unique_key = '$fileUniqueKey' AND num_of_line IN ($numLines)");
+        $query->fetch_array(MYSQLI_NUM);
+
+
     }
 
 }

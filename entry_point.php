@@ -1,20 +1,10 @@
 <?php
-require_once __DIR__ . '\render_helper.php';
+/**
+ * I know that this file must be slim, but I have a lack of time to write router and etc...
+ */
+require_once __DIR__ . '\helper.php';
+require_once __DIR__ . '\autoloader.php';
 
-function autoLoader($className)
-{
-    $className = ltrim($className, '\\');
-    $fileName  = '';
-    $namespace = '';
-    if ($lastNsPos = strrpos($className, '\\')) {
-        $namespace = substr($className, 0, $lastNsPos);
-        $className = substr($className, $lastNsPos + 1);
-        $fileName  = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
-    }
-    $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-
-    require $fileName;
-}
 spl_autoload_register('autoLoader');
 
 // Our directory with files to index

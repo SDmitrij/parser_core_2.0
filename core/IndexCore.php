@@ -17,10 +17,11 @@ class IndexCore
      * @param object $file
      * @throws \Exception
      */
-    protected function indexer(object $file)
+    protected function indexer(object $file): void
     {
         // Get file's strings as array
         $lines = file($file->getFilePath());
+        $lineCounter = 1;
 
         if ($lines !== false)
         {
@@ -29,15 +30,17 @@ class IndexCore
                 $this->filesRepo->createTableWords($file->getFileName());
                 foreach ($lines as $line)
                 {
-                    $this->filesRepo->insertIntoTableStrings($file->getFileName(), $file->getFileUniqueKey(), $line);
+                    $this->filesRepo->insertIntoTableStrings($file->getFileName(), $file->getFileUniqueKey(), $line, $lineCounter);
 
                     // Get all words of file's string as array
                     $words = str_word_count($line, 1);
 
                     foreach ($words as $word)
                     {
-                        $this->filesRepo->insertIntoTableWords($file->getFileName(), $file->getFileUniqueKey(), $word);
+                        $this->filesRepo->insertIntoTableWords($file->getFileName(), $file->getFileUniqueKey(), $word, $lineCounter);
                     }
+
+                    $lineCounter += 1;
                 }
 
                 // Current file has already indexed
@@ -54,25 +57,28 @@ class IndexCore
      * @param array $files
      * @return array
      */
-    protected function searcher(string $wordToSrc, array $files)
+    protected function searcher(string $wordToSrc, array $files): array
     {
-        $filesData = [];
+
+        $filesStrMatchesAndKeys = [];
         foreach ($files as $file)
         {
             if ($this->filesRepo->checkIfFileAlreadyIndexed($file->getFileUniqueKey()) == true)
             {
-                $filesData[] = $this->filesRepo->searchInFiles($wordToSrc, $file->getFileName());
+                $filesStrMatchesAndKeys[] = $this->filesRepo->searchInFilesWords($wordToSrc, $file->getFileName());
             }
         }
 
-        return $filesData;
+        //print_r($filesStrMatchesAndKeys);
+
+        return $filesStrMatchesAndKeys;
     }
 
     /**
      * @param array $files
      * @throws \Exception
      */
-    protected function excludeOrIncludeFilesToIndex(array & $files)
+    protected function excludeOrIncludeFilesToIndex(array & $files): void
     {
         // Go through file objects
         foreach ($files as $key => $file)
@@ -98,6 +104,5 @@ class IndexCore
             }
         }
     }
-
 
 }

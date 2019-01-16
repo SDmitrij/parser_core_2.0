@@ -5,6 +5,10 @@ namespace controller;
 use core\FileCore;
 use core\RepoCore;
 
+/**
+ * Class FileController
+ * @package controller
+ */
 class FileController
 {
     /**
@@ -41,16 +45,16 @@ class FileController
      */
     public function setFilesMainDataAction()
     {
-        foreach ($this->files as $file)
-        {
-            try {
+        try {
+
+            foreach ($this->files as $file)
+            {
                 $file->setFileMainData($this->filesRepo);
-            } catch (\Exception $exception) {
-                echo $exception->getMessage();
             }
 
+        } catch (\Exception $exception) {
+            echo $exception->getMessage();
         }
-
     }
 
 
