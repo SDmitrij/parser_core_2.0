@@ -79,6 +79,7 @@ function renderSearchResults(array $filesData, string $wrdToSrc): void
         $renderData['file_strings'][] = str_replace($wrdToSrc, "<text style='color:red'>$wrdToSrc</text>", $fileString) . "<br/>";
     }
 
+    // Echo json response
     echo json_encode($renderData);
 }
 
@@ -102,4 +103,3 @@ if (isset($_POST['wordToSearch']))
         }
     }
 }
-
