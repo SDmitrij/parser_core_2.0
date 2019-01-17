@@ -65,8 +65,27 @@ function renderMainArea(array $renderData)
         </div>";
 }
 
+/**
+ * @param array $filesData
+ * @param string $wrdToSrc
+ */
+function renderSearchResults(array $filesData, string $wrdToSrc): void
+{
+    $renderData = [];
+    $renderData['file_info'] = "<p><h3 style='color:green'>There are " . count($filesData['file_strings']) .
+        " matches in: ". $filesData['file_path'] ."</h3></p>";
+    foreach ($filesData['file_strings'] as $fileString)
+    {
+        $renderData['file_strings'][] = str_replace($wrdToSrc, "<text style='color:red'>$wrdToSrc</text>", $fileString) . "<br/>";
+    }
+
+    echo json_encode($renderData);
+}
+
+// Handle ajax request and invoke search action
 if (isset($_POST['wordToSearch']))
 {
+    $wrdToSrc = $_POST['wordToSearch'];
     $dir = __DIR__ . '\texts';
     $indexing = new controller\IndexController();
     $paths = $indexing->readFolder($dir);
@@ -76,7 +95,11 @@ if (isset($_POST['wordToSearch']))
 
     if (!empty($filesController->files))
     {
-        $indexing->searchAction($_POST['wordToSearch'], $filesController->files);
+        $filesDataToRender = $indexing->searchAction($wrdToSrc, $filesController->files);
+        if (!empty($filesDataToRender))
+        {
+            renderSearchResults($filesDataToRender, $wrdToSrc);
+        }
     }
 }
 

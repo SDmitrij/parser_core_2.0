@@ -59,19 +59,25 @@ class IndexCore
      */
     protected function searcher(string $wordToSrc, array $files): array
     {
+        // Files data to render
+        $filesData = [];
 
-        $filesStrMatchesAndKeys = [];
         foreach ($files as $file)
         {
             if ($this->filesRepo->checkIfFileAlreadyIndexed($file->getFileUniqueKey()) == true)
             {
-                $filesStrMatchesAndKeys[] = $this->filesRepo->searchInFilesWords($wordToSrc, $file->getFileName());
+                $filesStrMatchesAndKeys = $this->filesRepo->searchInFilesWords($wordToSrc, $file->getFileName());
+                if (!empty($filesStrMatchesAndKeys))
+                {
+                    $filesData['file_path'] = $file->getFilePath();
+                    $filesData['file_strings'] = $this->filesRepo->searchInFilesStrings($file->getFileName(), $filesStrMatchesAndKeys['file_unique_key'],
+                        implode(',', $filesStrMatchesAndKeys['num_lines']));
+                }
             }
         }
 
-        //print_r($filesStrMatchesAndKeys);
 
-        return $filesStrMatchesAndKeys;
+        return $filesData;
     }
 
     /**
@@ -104,5 +110,4 @@ class IndexCore
             }
         }
     }
-
 }

@@ -29,7 +29,7 @@ class IndexController extends IndexCore
                 {
                     if ($file != "." && $file != "..")
                     {
-                        $paths[] = $dir . "/" . $file;
+                        $paths[] = $dir . DIRECTORY_SEPARATOR . $file;
                     }
                 }
                 closedir($dh);
@@ -54,17 +54,18 @@ class IndexController extends IndexCore
     /**
      * @param string $wordToSrc
      * @param array $files
+     * @return array
      */
-    public function searchAction(string $wordToSrc, array $files)
+    public function searchAction(string $wordToSrc, array $files): array
     {
-        parent::searcher($wordToSrc, $files);
+        return parent::searcher($wordToSrc, $files);
     }
 
     /**
      * @param array $files
      * @throws \Exception
      */
-    public function excludeOrIncludeFilesToIndexAction(array & $files)
+    public function excludeOrIncludeFilesToIndexAction(array & $files): void
     {
         parent::excludeOrIncludeFilesToIndex($files);
     }

@@ -29,6 +29,11 @@ class RepoCore
     private $WRD_PREFIX = 'words_of__';
 
     /**
+     * @var string $STR_PREFIX
+     */
+    private $STR_PREFIX = 'strings_of__';
+
+    /**
      * RepoCore constructor.
      * @param string $host
      * @param string $user
@@ -51,7 +56,7 @@ class RepoCore
      * Create main files repository
      * @throws \Exception
      */
-    public function createRepo()
+    public function createRepo(): void
     {
         $query = $this->DB->query(" CREATE DATABASE IF NOT EXISTS " . $this->DB_NAME . "");
         if ($query == false)
@@ -64,7 +69,7 @@ class RepoCore
      * @return void
      * @throws \Exception
      */
-    public function createAlreadyIndexedRepo()
+    public function createAlreadyIndexedRepo(): void
     {
         $query =  $this->DB->query("CREATE TABLE IF NOT EXISTS $this->DB_NAME.$this->ALREADY_IDX
         (id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -85,9 +90,9 @@ class RepoCore
      * @param string $filename
      * @throws \Exception
      */
-    public function createTableStrings(string $filename)
+    public function createTableStrings(string $filename): void
     {
-        if ($this->DB->query("CREATE TABLE IF NOT EXISTS $this->DB_NAME.$filename
+        if ($this->DB->query("CREATE TABLE IF NOT EXISTS $this->DB_NAME.$this->STR_PREFIX"."$filename
            (id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             file_unique_key VARCHAR(32) NOT NULL,
             string_of_file VARCHAR(200) NOT NULL,
@@ -102,7 +107,7 @@ class RepoCore
      * @param string $filename
      * @throws \Exception
      */
-    public function createTableWords(string $filename)
+    public function createTableWords(string $filename): void
     {
         if ($this->DB->query("CREATE TABLE IF NOT EXISTS $this->DB_NAME.$this->WRD_PREFIX"."$filename
            (id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -124,7 +129,7 @@ class RepoCore
      * @throws \Exception
      */
     public function
-    insertIntoAlreadyIndex(string $filePath, string $fileHash, string $fileUniqueKey, int $fileSize, int $isIndex)
+    insertIntoAlreadyIndex(string $filePath, string $fileHash, string $fileUniqueKey, int $fileSize, int $isIndex): void
     {
         $filePath = $this->DB->real_escape_string(trim($filePath));
 
@@ -143,11 +148,11 @@ class RepoCore
      * @param int $lineNum
      * @throws \Exception
      */
-    public function insertIntoTableStrings(string $filename, string $fileUniqueKey, string $strOfFile, int $lineNum)
+    public function insertIntoTableStrings(string $filename, string $fileUniqueKey, string $strOfFile, int $lineNum): void
     {
         $strOfFile = $this->DB->real_escape_string(trim($strOfFile));
 
-        if ($this->DB->query("INSERT INTO $this->DB_NAME.$filename
+        if ($this->DB->query("INSERT INTO $this->DB_NAME.$this->STR_PREFIX"."$filename
            (file_unique_key, string_of_file, num_of_line) VALUES ('$fileUniqueKey', '$strOfFile', $lineNum)") == false)
         {
             throw new \Exception("Failed to insert a string of file: " . $filename . "<br/>");
@@ -161,7 +166,7 @@ class RepoCore
      * @param int $lineNum
      * @throws \Exception
      */
-    public function insertIntoTableWords(string $filename, string $fileUniqueKey, string $word, int $lineNum)
+    public function insertIntoTableWords(string $filename, string $fileUniqueKey, string $word, int $lineNum): void
     {
         $word = $this->DB->real_escape_string($word);
 
@@ -177,9 +182,9 @@ class RepoCore
      * @param string $fileUniqueKey
      * @throws \Exception
      */
-    public function deleteFilesRepo(string $filename, string $fileUniqueKey)
+    public function deleteFilesRepo(string $filename, string $fileUniqueKey): void
     {
-        if (($this->DB->query("DROP TABLE IF EXISTS $this->DB_NAME.$filename")
+        if (($this->DB->query("DROP TABLE IF EXISTS $this->DB_NAME.$this->STR_PREFIX"."$filename")
             &&
             $this->DB->query("DROP TABLE IF EXISTS $this->DB_NAME.$this->WRD_PREFIX"."$filename")
             &&
@@ -240,7 +245,7 @@ class RepoCore
      * @param int $indexStatus
      * @throws \Exception
      */
-    public function setIsIndexStatus(string $fileUniqueKey, int $indexStatus)
+    public function setIsIndexStatus(string $fileUniqueKey, int $indexStatus): void
     {
         if ($this
             ->DB
@@ -286,13 +291,23 @@ class RepoCore
      * @param string $filename
      * @param string $fileUniqueKey
      * @param string $numLines
+     * @return array
      */
-    public function searchInFilesStrings(string $filename, string $fileUniqueKey, string $numLines)
+    public function searchInFilesStrings(string $filename, string $fileUniqueKey, string $numLines): array
     {
-        $query = $this->DB->query("SELECT string_of_file FROM $this->DB_NAME.$filename WHERE file_unique_key = '$fileUniqueKey' AND num_of_line IN ($numLines)");
-        $query->fetch_array(MYSQLI_NUM);
+        $query = $this->DB->query("SELECT string_of_file FROM $this->DB_NAME.$this->STR_PREFIX"."$filename WHERE file_unique_key = '$fileUniqueKey' AND num_of_line IN ($numLines)");
 
+        $lines = [];
+        if ($query->num_rows !== NULL)
+        {
+            for ($i = 0; $i < $query->num_rows; $i++)
+            {
+                $lines[$i] = $query->fetch_array(MYSQLI_NUM)[0];
+            }
 
+        }
+
+        return $lines;
     }
 
 }
