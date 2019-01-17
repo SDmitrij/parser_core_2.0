@@ -43,7 +43,7 @@ class IndexController extends IndexCore
      * @param array $files
      * @throws \Exception
      */
-    public function indexAction(array $files)
+    public function indexAction(array $files): void
     {
         foreach ($files as $file)
         {
