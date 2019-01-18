@@ -72,11 +72,12 @@ function renderMainArea(array $renderData)
 function renderSearchResults(array $filesData, string $wrdToSrc): void
 {
     $renderData = [];
+
     $renderData['file_info'] = "<p><h3 style='color:green'>There are " . count($filesData['file_strings']) .
         " matches in: ". $filesData['file_path'] ."</h3></p>";
     foreach ($filesData['file_strings'] as $fileString)
     {
-        $renderData['file_strings'][] = str_replace($wrdToSrc, "<text style='color:red'>$wrdToSrc</text>", $fileString) . "<br/>";
+        $renderData['file_strings'][] = str_ireplace($wrdToSrc, "<text style='color:red'>$wrdToSrc</text>", $fileString) . "<br/>";
     }
 
     // Echo json response
