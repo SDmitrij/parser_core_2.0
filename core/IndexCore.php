@@ -76,7 +76,6 @@ class IndexCore
             }
         }
 
-
         return $filesData;
     }
 
@@ -86,28 +85,29 @@ class IndexCore
      */
     protected function excludeOrIncludeFilesToIndex(array & $files): void
     {
-        // Go through file objects
-        foreach ($files as $key => $file)
-        {
-            if ($this->filesRepo->checkIfFileAlreadyIndexed($file->getFileUniqueKey()) == true)
+        try {
+
+            // Go through file objects
+            foreach ($files as $key => $file)
             {
-                // Get prev. file's data
-                $prevFileData = $this->filesRepo->getFileMainData($file->getFileUniqueKey());
-
-                // If files are equal
-                if ($prevFileData['file_hash'] == $file->getFileHash() && $prevFileData['file_size'] == $file->getFileSize())
+                if ($this->filesRepo->checkIfFileAlreadyIndexed($file->getFileUniqueKey()) == true)
                 {
-                    unset($files[$key]);
-                } else {
-                    // Delete file's info 'cause it modified
-                    try {
-                        $this->filesRepo->deleteFilesRepo($file->getFileName(), $file->getFileUniqueKey());
-                    } catch (\Exception $exception) {
-                        echo $exception->getMessage();
-                    }
+                    // Get prev. file's data
+                    $prevFileData = $this->filesRepo->getFileMainData($file->getFileUniqueKey());
 
+                    // If files are equal
+                    if ($prevFileData['file_hash'] == $file->getFileHash() && $prevFileData['file_size'] == $file->getFileSize())
+                    {
+                        unset($files[$key]);
+                    } else {
+                        // Delete file's info 'cause it modified
+                        $this->filesRepo->deleteFilesRepo($file->getFileName(), $file->getFileUniqueKey());
+                    }
                 }
             }
+
+        } catch (\Exception $exception) {
+            echo $exception->getMessage();
         }
     }
 }

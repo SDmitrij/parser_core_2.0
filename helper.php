@@ -56,7 +56,7 @@ function renderMainArea(array $renderData)
         <div class='parser-core_block_right_search_side' style='float:right; width: 50%'>
             <h3>Search form:</h3>
         <div class='parser-core_search_block'>
-            <p>Input a word:</p>
+            <p><text style='color:blue'>Input a word:</text></p>
             <input class='parser-core_search_by_word_input' type='text'>
             <button class='parser-core_input_send_data'>Search!</button>
         </div>
@@ -72,13 +72,16 @@ function renderMainArea(array $renderData)
 function renderSearchResults(array $filesData, string $wrdToSrc): void
 {
     $renderData = [];
+    $numOfWrdOccur = 0;
 
-    $renderData['file_info'] = "<p><h3 style='color:green'>There are " . count($filesData['file_strings']) .
-        " matches in: ". $filesData['file_path'] ."</h3></p>";
     foreach ($filesData['file_strings'] as $fileString)
     {
         $renderData['file_strings'][] = str_ireplace($wrdToSrc, "<text style='color:red'>$wrdToSrc</text>", $fileString) . "<br/>";
+        $numOfWrdOccur += substr_count(strtoupper($fileString), strtoupper($wrdToSrc));
     }
+
+    $renderData['file_info'] = "<p><h3 style='color:green'>There are " . $numOfWrdOccur  .
+        " matches in: ". $filesData['file_path'] ."</h3></p>";
 
     // Echo json response
     echo json_encode($renderData);
