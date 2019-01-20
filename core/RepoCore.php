@@ -260,7 +260,7 @@ class RepoCore
      * @param string $fileName
      * @return array
      */
-    public function searchInFilesWords(string $wordToSrc, string $fileName):array
+    public function searchInFilesWords(string $wordToSrc, string $fileName): array
     {
 
         $query = $this->DB->query("SELECT file_unique_key FROM $this->DB_NAME.$this->WRD_PREFIX"."$fileName WHERE word_of_file = '$wordToSrc' LIMIT 1");
@@ -296,7 +296,6 @@ class RepoCore
     public function searchInFilesStrings(string $filename, string $fileUniqueKey, string $numLines): array
     {
         $query = $this->DB->query("SELECT string_of_file FROM $this->DB_NAME.$this->STR_PREFIX"."$filename WHERE file_unique_key = '$fileUniqueKey' AND num_of_line IN ($numLines)");
-
         $lines = [];
         if ($query->num_rows !== NULL)
         {

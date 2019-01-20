@@ -86,7 +86,6 @@ class IndexCore
     protected function excludeOrIncludeFilesToIndex(array & $files): void
     {
         try {
-
             // Go through file objects
             foreach ($files as $key => $file)
             {
@@ -99,6 +98,7 @@ class IndexCore
                     if ($prevFileData['file_hash'] == $file->getFileHash() && $prevFileData['file_size'] == $file->getFileSize())
                     {
                         unset($files[$key]);
+
                     } else {
                         // Delete file's info 'cause it modified
                         $this->filesRepo->deleteFilesRepo($file->getFileName(), $file->getFileUniqueKey());
