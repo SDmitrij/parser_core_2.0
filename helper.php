@@ -13,14 +13,15 @@ function renderMainArea(array $renderData)
     $filesHtmlGenerator = function (string $key, array $renderData): string {
 
         $blockName = str_replace('_', ' ', $key);
-        $content = "<div class='parser-core_$key'><h3>$blockName:</h3><ul>";
+        $content = sprintf("<div class='parser-core_%s'><h3>%s:</h3><ul>", $key, $blockName);
 
         foreach ($renderData[$key] as $file)
         {
+            /** @var \core\FileCore $file */
             $content .= "<li>" . $file->getFilePath() . "</li>";
         }
-        $content .= "</ul></div>";
 
+        $content .= "</ul></div>";
         return $content;
     };
 
@@ -61,7 +62,9 @@ function renderSearchResults(array $filesData, string $wrdToSrc): void
 
     foreach ($filesData['file_strings'] as $fileString)
     {
-        $renderData['file_strings'][] = str_ireplace($wrdToSrc, "<text style='color:red'>$wrdToSrc</text>", $fileString) . "<br/>";
+        $renderData['file_strings'][] = preg_replace(sprintf('/%s/', $wrdToSrc),
+                sprintf('<text style=\'color:red\'>%s</text>', $wrdToSrc), $fileString) . "<br/>";
+
         $numOfWrdOccur += substr_count(strtoupper($fileString), strtoupper($wrdToSrc));
     }
 

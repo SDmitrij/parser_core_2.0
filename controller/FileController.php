@@ -47,6 +47,7 @@ class FileController
     {
         try {
 
+            /**@var FileCore $file */
             foreach ($this->files as $file)
             {
                 $file->setFileMainData($this->filesRepo);
@@ -56,6 +57,5 @@ class FileController
             echo $exception->getMessage();
         }
     }
-
 
 }

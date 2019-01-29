@@ -92,24 +92,32 @@ class FileCore
     }
 
     /**
-     * @param object $filesRepo
+     * @param RepoCore $filesRepo
      * @throws \Exception
      */
-    public function setFileMainData(object $filesRepo)
+    public function setFileMainData($filesRepo)
     {
-        $filesRepo
-            ->insertIntoAlreadyIndex($this->filePath, $this->fileHash, $this->fileUniqueKey, $this->fileSize, $this->isIndex);
-
+        try {
+            $filesRepo
+                ->insertIntoAlreadyIndex($this->filePath, $this->fileHash, $this->fileUniqueKey, $this->fileSize, $this->isIndex);
+        } catch (\Exception $exception) {
+            echo $exception->getMessage();
+        }
     }
 
     /**
-     * @param object $filesRepo
+     * @param RepoCore $filesRepo
      * @param int $isIndex
+     * @throws \Exception
      */
-    public function setFileRepoIsIndexStatus(object $filesRepo, int $isIndex)
+    public function setFileRepoIsIndexStatus($filesRepo, int $isIndex)
     {
         $this->isIndex = $isIndex;
-        $filesRepo->setIsIndexStatus($this->fileUniqueKey, $isIndex);
+        try {
+            $filesRepo->setIsIndexStatus($this->fileUniqueKey, $isIndex);
+        } catch (\Exception $exception) {
+            echo $exception->getMessage();
+        }
     }
 
 }

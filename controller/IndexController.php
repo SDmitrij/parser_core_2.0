@@ -2,14 +2,16 @@
 
 namespace controller;
 
+use core\FileCore;
 use core\IndexCore;
+use core\RepoCore;
 
 class IndexController extends IndexCore
 {
     /**
-     * @param object $filesRepo
+     * @param RepoCore $filesRepo
      */
-    public function setFilesRepo(object $filesRepo)
+    public function setFilesRepo($filesRepo)
     {
         $this->filesRepo = $filesRepo;
     }
@@ -45,6 +47,7 @@ class IndexController extends IndexCore
      */
     public function indexAction(array $files): void
     {
+        /** @var  FileCore $file */
         foreach ($files as $file)
         {
             parent::indexer($file);
