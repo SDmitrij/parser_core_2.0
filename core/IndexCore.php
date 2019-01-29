@@ -8,6 +8,7 @@ namespace core;
  */
 class IndexCore
 {
+	
     /**
      * @var RepoCore
      */

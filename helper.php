@@ -9,7 +9,6 @@ spl_autoload_register('autoLoader');
  */
 function renderMainArea(array $renderData)
 {
-
     // Anon. function that renders an html data of files
     $filesHtmlGenerator = function (string $key, array $renderData): string {
 
@@ -45,24 +44,10 @@ function renderMainArea(array $renderData)
         $htmlContent .= "<div class='parser-core_empty'><h3>There are no files or something wrong with parser!</h3></div>";
     }
 
-    echo "<script src='js/jquery-3.3.1.min.js'></script>
-        <script src='js/main.js'></script>
-        <div class='parser-core_main' style='width: 100%;'><br />
-        <div class='parser-core_block_left_index_side'style='float:left; width: 50%'>
-        <!--Here must be files to render -->
-        " . $htmlContent . "
-        </div>
-        <br />
-        <div class='parser-core_block_right_search_side' style='float:right; width: 50%'>
-            <h3>Search form:</h3>
-        <div class='parser-core_search_block'>
-            <p><text style='color:blue'>Input a word:</text></p>
-            <input class='parser-core_search_by_word_input' type='text'>
-            <button class='parser-core_input_send_data'>Search!</button>
-        </div>
-        </div><br /></div>
-        <div style=\"clear:both\"> 
-        </div>";
+    $mainTemplate = file_get_contents(__DIR__ . '/main_template.html');
+    $renderArea = str_replace('<!--Render-->', $htmlContent, $mainTemplate);
+
+    echo $renderArea;
 }
 
 /**
