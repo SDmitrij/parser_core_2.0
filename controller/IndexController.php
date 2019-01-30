@@ -6,8 +6,13 @@ use core\FileCore;
 use core\IndexCore;
 use core\RepoCore;
 
+/**
+ * Class IndexController
+ * @package controller
+ */
 class IndexController extends IndexCore
 {
+
     /**
      * @param RepoCore $filesRepo
      */
@@ -20,25 +25,19 @@ class IndexController extends IndexCore
      * @param string $dir
      * @return array
      */
-    public function readFolder(string $dir): array
+    public function readFolderAction(string $dir): array
     {
-        $paths = [];
-        if (is_dir($dir))
-        {
-            if ($dh = opendir($dir))
-            {
-                while ($file = readdir($dh))
-                {
-                    if ($file != "." && $file != "..")
-                    {
-                        $paths[] = $dir . DIRECTORY_SEPARATOR . $file;
-                    }
-                }
-                closedir($dh);
-            }
-        }
+        return parent::readFolder($dir);
+    }
 
-        return $paths;
+    /**
+     * @param $renderData
+     * @param string $template
+     * @return string
+     */
+    public function renderMainAreaAction(array $renderData, string $template): string
+    {
+        return parent::renderMainArea($renderData, $template);
     }
 
     /**
@@ -68,9 +67,18 @@ class IndexController extends IndexCore
      * @param array $files
      * @throws \Exception
      */
-    public function excludeOrIncludeFilesToIndexAction(array & $files): void
+    public function excludeOrIncludeFilesToIndexAction(array &$files): void
     {
         parent::excludeOrIncludeFilesToIndex($files);
     }
 
+    /**
+     * @param array $filesData
+     * @param string $wordToSrc
+     * @return string
+     */
+    public function generateSearchResultsAction(array $filesData, string $wordToSrc): string
+    {
+        return parent::generateSearchResults($filesData, $wordToSrc);
+    }
 }

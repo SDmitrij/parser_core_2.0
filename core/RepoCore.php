@@ -121,17 +121,17 @@ class RepoCore
     }
 
     /**
-     * @param string $filePath
-     * @param string $fileHash
-     * @param string $fileUniqueKey
-     * @param int $fileSize
-     * @param int $isIndex
+     * @param FileCore $file
      * @throws \Exception
      */
     public function
-    insertIntoAlreadyIndex(string $filePath, string $fileHash, string $fileUniqueKey, int $fileSize, int $isIndex): void
+    insertIntoAlreadyIndex($file): void
     {
-        $filePath = $this->DB->real_escape_string(trim($filePath));
+        $filePath = $this->DB->real_escape_string(trim($file->getFilePath()));
+        $fileHash = $file->getFileHash();
+        $fileUniqueKey = $file->getFileUniqueKey();
+        $fileSize = $file->getFileSize();
+        $isIndex = $file->getIsIndexStatus();
 
         if ($this->DB->query("INSERT INTO $this->DB_NAME.$this->ALREADY_IDX
            (file_path, file_hash, file_unique_key, file_size, is_index) 

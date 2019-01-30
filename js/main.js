@@ -3,7 +3,7 @@ $(function () {
         let sendData = $('.parser-core_search_by_word_input').val();
         if (sendData != null && sendData !== '') {
             $.ajax({
-                url: 'helper.php',
+                url: 'request_resolver.php',
                 type: 'post',
                 dataType: 'json',
                 data: {wordToSearch: sendData},

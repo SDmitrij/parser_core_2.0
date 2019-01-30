@@ -92,6 +92,14 @@ class FileCore
     }
 
     /**
+     * @return int
+     */
+    public function getIsIndexStatus(): int
+    {
+        return $this->isIndex;
+    }
+
+    /**
      * @param RepoCore $filesRepo
      * @throws \Exception
      */
@@ -99,7 +107,7 @@ class FileCore
     {
         try {
             $filesRepo
-                ->insertIntoAlreadyIndex($this->filePath, $this->fileHash, $this->fileUniqueKey, $this->fileSize, $this->isIndex);
+                ->insertIntoAlreadyIndex($this);
         } catch (\Exception $exception) {
             echo $exception->getMessage();
         }
@@ -119,5 +127,4 @@ class FileCore
             echo $exception->getMessage();
         }
     }
-
 }
