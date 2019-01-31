@@ -262,9 +262,8 @@ class RepoCore
      */
     public function searchInFilesWords(string $wordToSrc, string $fileName): array
     {
-
+        $wordToSrc = $this->DB->real_escape_string($wordToSrc);
         $query = $this->DB->query("SELECT file_unique_key FROM $this->DB_NAME.$this->WRD_PREFIX"."$fileName WHERE word_of_file = '$wordToSrc' LIMIT 1");
-
         $result = $query->fetch_array(MYSQLI_ASSOC);
 
         if ($result !== NULL)
