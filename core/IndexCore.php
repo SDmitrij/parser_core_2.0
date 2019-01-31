@@ -153,18 +153,25 @@ class IndexCore
     {
         $jsonFilesData = [];
 
-        foreach ($filesData as $fileData)
-        {
-            $jsonFilesData['file_info'][] = $fileData['file_path'];
+        foreach ($filesData as $fileData) {
 
-            foreach ($fileData['file_strings'] as $fileString)
-            {
-                $jsonFilesData['file_strings'][] = preg_replace(sprintf('/\b%s\b/i', $wordToSrc),
-                    sprintf("<text style='color:red'>%s</text>", $wordToSrc), $fileString) . "<br/>";
-            }
+            // Anon. function to generate strings to render
+            $stringsGenerator = function (array $fileStrings, string $word): array {
+                $result = [];
+                foreach ($fileStrings as $fileString)
+                {
+                    $result[] = preg_replace(sprintf("/\b%s\b/i", $word),
+                            sprintf("<text style='color:red'>%s</text>", $word), $fileString) . "<br/>";
+                }
+                return $result;
+            };
 
+            $fileInfo = sprintf("<p><h3 style='color: green'>File: %s</h3></p>",
+                $fileData['file_path']);
+            $dataToJson['file_info'] = $fileInfo;
+            $dataToJson['file_strings'] = $stringsGenerator($fileData['file_strings'], $wordToSrc);
+            $jsonFilesData[] = $dataToJson;
         }
-
         return json_encode($jsonFilesData);
     }
 
@@ -177,23 +184,18 @@ class IndexCore
     {
         // Anon. function that renders an html data of files
         $filesHtmlGenerator = function (string $key, array $renderData): string {
-
             $blockName = str_replace('_', ' ', $key);
             $content = sprintf("<div class='parser-core_%s'><h3>%s:</h3><ul>", $key, $blockName);
-
             foreach ($renderData[$key] as $file)
             {
                 /** @var \core\FileCore $file */
                 $content .= "<li>" . $file->getFilePath() . "</li>";
             }
-
             $content .= "</ul></div>";
             return $content;
         };
-
         // File's data to render
         $htmlContent = '';
-
         if (!empty($renderData))
         {
             $renderKeys = array_keys($renderData);
@@ -203,15 +205,12 @@ class IndexCore
                 {
                     $htmlContent .= $filesHtmlGenerator($renderKey, $renderData);
                 }
-
             }
 
         } else {
-
             $htmlContent .=
                 "<div class='parser-core_empty'><h3>There are no files or something wrong with parser!</h3></div>";
         }
-
         $renderArea = str_replace('<!--Render-->', $htmlContent, file_get_contents($templatePath));
 
         return $renderArea;

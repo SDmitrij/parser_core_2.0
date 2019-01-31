@@ -8,19 +8,16 @@ $(function () {
                 dataType: 'json',
                 data: {wordToSearch: sendData},
                 success: function (dataToRender) {
-                    let htmlToRender = "<div class='parser-core_search_results'>";
-                    htmlToRender += dataToRender['file_info'];
-
-                    for (let i = 0; i < dataToRender['file_strings'].length; i++)
-                    {
-                       htmlToRender += dataToRender['file_strings'][i];
-                    }
-
-                    htmlToRender += "</div>";
-
                     $('.parser-core_search_results').remove();
-
-                    $('.parser-core_search_block').append(htmlToRender);
+                    for (let key in dataToRender) {
+                        let htmlToRender = "<div class='parser-core_search_results'>";
+                        htmlToRender += dataToRender[key]['file_info'];
+                        for (let i = 0; i < dataToRender[key]['file_strings'].length; i++) {
+                            htmlToRender += dataToRender[key]['file_strings'][i];
+                        }
+                        htmlToRender += "</div>";
+                        $('.parser-core_search_block').append(htmlToRender);
+                    }
                 }
             })
         }
