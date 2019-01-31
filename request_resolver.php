@@ -16,7 +16,6 @@ if (isset($_POST['wordToSearch']))
     if (!empty($filesController->files))
     {
         $filesDataToRender = $indexing->searchAction($wrdToSrc, $filesController->files);
-        $filesJsonData = $indexing->generateSearchResultsAction($filesDataToRender, $wrdToSrc);
-        echo $filesJsonData;
+        echo $indexing->generateSearchResultsAction($filesDataToRender, $wrdToSrc);
     }
 }
