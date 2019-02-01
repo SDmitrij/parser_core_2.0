@@ -10,7 +10,7 @@ $(function () {
                 success: function (dataToRender) {
                     $('.parser-core_search_results').remove();
                     for (let key in dataToRender) {
-                        let htmlToRender = "<div class='parser-core_search_results'>";
+                        let htmlToRender = "<div class='parser-core_search_results>";
                         htmlToRender += dataToRender[key]['file_info'];
                         for (let i = 0; i < dataToRender[key]['file_strings'].length; i++) {
                             htmlToRender += dataToRender[key]['file_strings'][i];
