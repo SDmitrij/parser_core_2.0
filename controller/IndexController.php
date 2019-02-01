@@ -32,12 +32,11 @@ class IndexController extends IndexCore
 
     /**
      * @param $renderData
-     * @param string $template
      * @return string
      */
-    public function renderMainAreaAction(array $renderData, string $template): string
+    public function renderMainAreaAction(array $renderData): string
     {
-        return parent::renderMainArea($renderData, $template);
+        return parent::renderMainArea($renderData);
     }
 
     /**

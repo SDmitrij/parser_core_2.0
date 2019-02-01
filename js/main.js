@@ -3,7 +3,7 @@ $(function () {
         let sendData = $('.parser-core_search_by_word_input').val();
         if (sendData != null && sendData !== '') {
             $.ajax({
-                url: 'request_resolver.php',
+                url: 'resolver.php',
                 type: 'post',
                 dataType: 'json',
                 data: {wordToSearch: sendData},
@@ -21,5 +21,15 @@ $(function () {
                 }
             })
         }
+    });
+    $('.parser-core_indexing').click(function () {
+        $.ajax({
+            url: 'resolver.php',
+            type: 'post',
+            data: {index: true},
+            success: function (indexStatus) {
+                $('.parser-core_block_left_index_side').empty().append(indexStatus);
+            }
+        })
     })
 });

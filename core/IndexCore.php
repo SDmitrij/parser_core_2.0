@@ -157,13 +157,13 @@ class IndexCore
 
             // Anon. function to generate strings to render
             $stringsGenerator = function (array $fileStrings, string $word): array {
-                $result = [];
+                $resultStrings = [];
                 foreach ($fileStrings as $fileString)
                 {
-                    $result[] = preg_replace(sprintf("/\b%s\b/i", $word),
+                    $resultStrings[] = preg_replace(sprintf("/\b%s\b/i", $word),
                             sprintf("<text style='color:red'>%s</text>", $word), $fileString) . "<br/>";
                 }
-                return $result;
+                return $resultStrings;
             };
 
             $fileInfo = sprintf("<p><h3 style='color: green'>File: %s</h3></p>",
@@ -177,15 +177,14 @@ class IndexCore
 
     /**
      * @param array $renderData
-     * @param string $templatePath
      * @return string
      */
-    protected function renderMainArea(array $renderData, string $templatePath): string
+    protected function renderMainArea(array $renderData): string
     {
         // Anon. function that renders an html data of files
-        $filesHtmlGenerator = function (string $key, array $renderData): string {
-            $blockName = str_replace('_', ' ', $key);
-            $content = sprintf("<div class='parser-core_%s'><h3>%s:</h3><ul>", $key, $blockName);
+        $htmlGenerator = function (string $key, array $renderData): string {
+            $content = sprintf("<div class='parser-core_%s'><h3 style='color: green'>%s:</h3><ul>", $key,
+                str_replace('_', ' ', $key));
             foreach ($renderData[$key] as $file)
             {
                 /** @var \core\FileCore $file */
@@ -194,6 +193,7 @@ class IndexCore
             $content .= "</ul></div>";
             return $content;
         };
+
         // File's data to render
         $htmlContent = '';
         if (!empty($renderData))
@@ -203,7 +203,7 @@ class IndexCore
             {
                 if (!empty($renderData[$renderKey]))
                 {
-                    $htmlContent .= $filesHtmlGenerator($renderKey, $renderData);
+                    $htmlContent .= $htmlGenerator($renderKey, $renderData);
                 }
             }
 
@@ -211,8 +211,6 @@ class IndexCore
             $htmlContent .=
                 "<div class='parser-core_empty'><h3>There are no files or something wrong with parser!</h3></div>";
         }
-        $renderArea = str_replace('<!--Render-->', $htmlContent, file_get_contents($templatePath));
-
-        return $renderArea;
+        return $htmlContent;
     }
 }
