@@ -4,20 +4,67 @@
     <meta charset="UTF-8">
     <script src='js/jquery-3.3.1.min.js'></script>
     <script src='js/main.js'></script>
+    <style>
+        .parser-core_main_body {
+            font-family: "Times New Roman", serif;
+            font-size: 16px;
+        }
+        .parser-core_main {
+            width: 100%;
+        }
+        .parser-core_block_right_search_side {
+            float: right;
+            width: 50%;
+        }
+        .parser-core_block_left_index_side {
+            float: left;
+            width: 50%;
+        }
+        .parser-core_search_results {
+            height: 800px;
+            width: 800px;
+            overflow-y: scroll;
+        }
+        .parser-core_search_by_word_input {
+            width: 200px;
+            height: 25px;
+            font-family: "Times New Roman", serif;
+            color: cornflowerblue;
+            font-size: 16px;
+            border-radius: 12px;
+        }
+        .parser-core_input_send_data {
+            height: 30px;
+            font-family: "Times New Roman", serif;
+            background-color: cornflowerblue;
+            border-radius: 12px;
+            color: white;
+        }
+        .parser-core_indexing {
+            height: 30px;
+            font-family: "Times New Roman", serif;
+            background-color: cornflowerblue;
+            border-radius: 12px;
+            color: white;
+        }
+        .parser-core_label_input {
+            color: cornflowerblue;
+        }
+    </style>
 </head>
-<body>
-<div class='parser-core_main' style='width: 100%;'><br />
-    <div class='parser-core_block_left_index_side'style='float:left; width: 50%'></div>
-    <br />
-    <div class='parser-core_block_right_search_side' style='float:right; width: 50%'>
+<body class='parser-core_main_body'>
+<div class='parser-core_main'>
+    <div class='parser-core_block_left_index_side'></div>
+    <div class='parser-core_block_right_search_side'>
         <h3>Search form:</h3>
-        <div class='parser-core_search_block' style='overflow: auto'>
-            <input class='parser-core_search_by_word_input' id='word_input' type='text' style='width: 200px;height: 25px;font-size: 16px; border-radius: 12px; font-family: "Times New Roman"'>
-            <label for='word_input' style="color: cornflowerblue">Input a word</label>
-            <button class='parser-core_input_send_data' style='height: 30px;background-color: cornflowerblue;border-radius: 12px;color: white'>Search</button>
-            <button class='parser-core_indexing' style='height: 30px;background-color: cornflowerblue;border-radius: 12px;color: white'>Indexing</button>
+        <div class='parser-core_search_block'>
+            <input class='parser-core_search_by_word_input' id='word_input' type='text'>
+            <label class='parser-core_label_input' for='word_input'>Input a word</label>
+            <button class='parser-core_input_send_data'>Search</button>
+            <button class='parser-core_indexing'>Indexing</button>
+            <div class='parser-core_search_results'></div>
         </div>
-    </div><br /></div>
+    </div></div>
 <div style='clear:both'></div>
 </body>
 </html>
