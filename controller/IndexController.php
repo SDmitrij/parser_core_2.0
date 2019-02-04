@@ -64,11 +64,13 @@ class IndexController extends IndexCore
 
     /**
      * @param array $files
+     * @param array $paths
+     * @return array
      * @throws \Exception
      */
-    public function excludeOrIncludeFilesToIndexAction(array &$files): void
+    public function excludeOrIncludeFilesToIndexAction(array &$files, array $paths): array
     {
-        parent::excludeOrIncludeFilesToIndex($files);
+        return parent::excludeOrIncludeFilesToIndex($files, $paths);
     }
 
     /**

@@ -57,5 +57,4 @@ class FileController
             echo $exception->getMessage();
         }
     }
-
 }

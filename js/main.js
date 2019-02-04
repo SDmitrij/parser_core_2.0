@@ -10,13 +10,18 @@ $(function () {
                 success: function (dataToRender) {
                     let searchBlock = $('.parser-core_search_results');
                     searchBlock.empty();
-                    for (let key in dataToRender) {
-                        let htmlToRender = dataToRender[key]['file_info'];
-                        for (let i = 0; i < dataToRender[key]['file_strings'].length; i++) {
-                            htmlToRender += dataToRender[key]['file_strings'][i];
+                    if (dataToRender.length != 0) {
+                        for (let key in dataToRender) {
+                            let htmlToRender = dataToRender[key]['file_info'];
+                            for (let i = 0; i < dataToRender[key]['file_strings'].length; i++) {
+                                htmlToRender += dataToRender[key]['file_strings'][i];
+                            }
+                            searchBlock.append(htmlToRender);
                         }
-                        searchBlock.append(htmlToRender);
+                    } else {
+                        searchBlock.append("<p><h3 style='color: red'>There are no any matches!</h3></p>")
                     }
+
                 }
             })
         }
@@ -30,5 +35,5 @@ $(function () {
                 $('.parser-core_block_left_index_side').empty().append(indexStatus);
             }
         })
-    })
+    });
 });

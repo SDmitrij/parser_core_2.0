@@ -113,18 +113,22 @@ class IndexCore
 
     /**
      * @param array $files
+     * @param array $paths
+     * @return array
      * @throws \Exception
      */
-    protected function excludeOrIncludeFilesToIndex(array &$files): void
+    protected function excludeOrIncludeFilesToIndex(array &$files, array $paths): array
     {
+        $indexInfo = ['deleted_files' => [], 'new_or_mod_files' => []];
         try {
             // Go through file objects
+            /**@var FileCore $file*/
             foreach ($files as $key => $file)
             {
                 if ($this->filesRepo->checkIfFileAlreadyIndexed($file->getFileUniqueKey()) == true)
                 {
                     // Get prev. file's data
-                    $prevFileData = $this->filesRepo->getFileMainData($file->getFileUniqueKey());
+                    $prevFileData = $this->filesRepo->getFileMainData(false, $file->getFileUniqueKey());
 
                     // If files are equal
                     if ($prevFileData['file_hash'] == $file->getFileHash()
@@ -135,13 +139,41 @@ class IndexCore
                     } else {
                         // Delete file's info 'cause it modified
                         $this->filesRepo->deleteFilesRepo($file->getFileName(), $file->getFileUniqueKey());
+                        $indexInfo['new_or_mod_files'] = $file->getFilePath();
                     }
                 }
             }
-
         } catch (\Exception $exception) {
             echo $exception->getMessage();
         }
+
+        $indexInfo['deleted_files'] = $this->hardDeletedFiles($paths);
+        return $indexInfo;
+    }
+
+    /**
+     * @param array $paths
+     * @return array
+     */
+    private function hardDeletedFiles(array $paths): array
+    {
+        $deletedFiles = [];
+        try {
+            $prevDirFiles = $this->filesRepo->getFileMainData(true);
+            foreach ($prevDirFiles as $prevDirFile)
+            {
+                if (!in_array($prevDirFile['file_path'], $paths))
+                {
+                    $this->filesRepo->deleteFilesRepo(basename($prevDirFile['file_path'], '.txt'),
+                        $prevDirFile['file_unique_key']);
+                    $deletedFiles[] = $prevDirFile['file_path'];
+                }
+            }
+        } catch (\Exception $exception) {
+            echo $exception->getMessage();
+        }
+
+        return $deletedFiles;
     }
 
     /**
@@ -153,21 +185,20 @@ class IndexCore
     {
         $jsonFilesData = [];
 
-        foreach ($filesData as $fileData) {
+        // Anon. function to generate strings to render
+        $stringsGenerator = function (array $fileStrings, string $word): array {
+            $resultStrings = [];
+            foreach ($fileStrings as $fileString)
+            {
+                $resultStrings[] = preg_replace(sprintf("/\b%s\b/i", $word),
+                        sprintf("<b style='color: red'>%s</b>", $word), $fileString) . "<br/>";
+            }
+            return $resultStrings;
+        };
 
-            // Anon. function to generate strings to render
-            $stringsGenerator = function (array $fileStrings, string $word): array {
-                $resultStrings = [];
-                foreach ($fileStrings as $fileString)
-                {
-                    $resultStrings[] = preg_replace(sprintf("/\b%s\b/i", $word),
-                            sprintf("<text style='color:red'>%s</text>", $word), $fileString) . "<br/>";
-                }
-                return $resultStrings;
-            };
-
-            $fileInfo = sprintf("<p><h3 style='color: green'>File: %s</h3></p>",
-                $fileData['file_path']);
+        foreach ($filesData as $fileData)
+        {
+            $fileInfo = sprintf("<p><h3 style='color: green'>File: %s</h3></p>", $fileData['file_path']);
             $dataToJson['file_info'] = $fileInfo;
             $dataToJson['file_strings'] = $stringsGenerator($fileData['file_strings'], $wordToSrc);
             $jsonFilesData[] = $dataToJson;
@@ -183,12 +214,11 @@ class IndexCore
     {
         // Anon. function that renders an html data of files
         $htmlGenerator = function (string $key, array $renderData): string {
-            $content = sprintf("<div class='parser-core_%s'><h3 style='color: green'>%s:</h3><ul>", $key,
+            $content = sprintf("<div class='parser-core_%s'><h3 style='color: cornflowerblue'>%s:</h3><ul>", $key,
                 str_replace('_', ' ', $key));
-            foreach ($renderData[$key] as $file)
+            foreach ($renderData[$key] as $path)
             {
-                /** @var \core\FileCore $file */
-                $content .= "<li>" . $file->getFilePath() . "</li>";
+                $content .= sprintf("<li>%s</li>", $path);
             }
             $content .= "</ul></div>";
             return $content;

@@ -29,6 +29,7 @@ if (isset($_POST['wordToSearch']))
 
 if (isset($_POST['index']) && $_POST['index'] == true)
 {
+    // Indexing info log
     $renderData = [];
     // If paths are not empty start indexing
     if (!empty($paths))
@@ -37,12 +38,12 @@ if (isset($_POST['index']) && $_POST['index'] == true)
         try {
             if(!empty($filesController->files))
             {
-                $renderData['current_directory_files'] = $filesController->files;
-                $indexing->excludeOrIncludeFilesToIndexAction($filesController->files);
-                $renderData['new_files_to_index'] = $filesController->files;
-
+                $indexInfo = $indexing->excludeOrIncludeFilesToIndexAction($filesController->files, $paths);
                 $filesController->setFilesMainDataAction();
                 $indexing->indexAction($filesController->files);
+                $renderData['current_directory_files'] = $paths;
+                $renderData['new_or_modified_files_to_index'] = $indexInfo['new_or_mod_files'];
+                $renderData['hard_deleted_files'] = $indexInfo['deleted_files'];
             }
         } catch (\Exception $exception) {
             echo $exception->getMessage();

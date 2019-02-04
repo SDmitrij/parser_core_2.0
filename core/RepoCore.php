@@ -195,26 +195,25 @@ class RepoCore
     }
 
     /**
-     * @param string $fileUniqueKey
+     * @param bool $allFiles
+     * @param string|NULL $fileUniqueKey
      * @return array
      */
-    public function getFileMainData(string $fileUniqueKey): array
+    public function getFileMainData(bool $allFiles, $fileUniqueKey = NULL): array
     {
-
-        $query =
-            $this
-            ->DB
-            ->query("SELECT * FROM $this->DB_NAME.$this->ALREADY_IDX WHERE file_unique_key = '$fileUniqueKey'");
-
+        $rows = [];
+        if ($allFiles == false) {
+            $sql = "SELECT * FROM $this->DB_NAME.$this->ALREADY_IDX WHERE file_unique_key = '$fileUniqueKey'";
+        } else {
+            $sql = "SELECT * FROM $this->DB_NAME.$this->ALREADY_IDX";
+        }
+        $query = $this->DB->query($sql);
         if ($query != false)
         {
-            $result = $query->fetch_array(MYSQLI_ASSOC);
-        } else {
-
-            $result = [];
+            $rows = $query->fetch_all(MYSQLI_ASSOC);
         }
 
-        return $result;
+        return $result = $allFiles ? $rows : reset($rows) ;
     }
 
     /**
