@@ -31,15 +31,6 @@ class IndexController extends IndexCore
     }
 
     /**
-     * @param $renderData
-     * @return string
-     */
-    public function renderMainAreaAction(array $renderData): string
-    {
-        return parent::renderMainArea($renderData);
-    }
-
-    /**
      * @param array $files
      * @throws \Exception
      */
@@ -71,15 +62,5 @@ class IndexController extends IndexCore
     public function excludeOrIncludeFilesToIndexAction(array &$files, array $paths): array
     {
         return parent::excludeOrIncludeFilesToIndex($files, $paths);
-    }
-
-    /**
-     * @param array $filesData
-     * @param string $wordToSrc
-     * @return string
-     */
-    public function generateSearchResultsAction(array $filesData, string $wordToSrc): string
-    {
-        return parent::generateSearchResults($filesData, $wordToSrc);
     }
 }

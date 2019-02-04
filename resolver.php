@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoloader.php';
-
 spl_autoload_register('autoLoader');
 
 $dir = __DIR__ . DIRECTORY_SEPARATOR . 'texts';
@@ -23,7 +22,7 @@ if (isset($_POST['wordToSearch']))
     if (!empty($filesController->files))
     {
         $filesDataToRender = $indexing->searchAction($wrdToSrc, $filesController->files);
-        echo $indexing->generateSearchResultsAction($filesDataToRender, $wrdToSrc);
+        echo \render\Render::generateSearchResults($filesDataToRender, $wrdToSrc);
     }
 }
 
@@ -57,5 +56,5 @@ if (isset($_POST['index']) && $_POST['index'] == true)
     }
 
     // Rendering an info
-    echo $indexing->renderMainAreaAction($renderData);
+    echo \render\Render::renderMainArea($renderData);
 }
