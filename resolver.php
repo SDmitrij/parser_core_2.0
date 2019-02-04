@@ -42,6 +42,7 @@ if (isset($_POST['index']) && $_POST['index'] == true)
                 $filesController->setFilesMainDataAction();
                 $indexing->indexAction($filesController->files);
 
+                // Collect data to render indexing info
                 $renderData[] = ['paths' => $paths, 'header' =>
                     ['header_color' => 'green', 'header_name' => 'Current directory files:']];
                 $renderData[] = ['paths' => $indexInfo['new_or_mod_files'], 'header' =>
@@ -55,5 +56,6 @@ if (isset($_POST['index']) && $_POST['index'] == true)
         }
     }
 
+    // Rendering an info
     echo $indexing->renderMainAreaAction($renderData);
 }
