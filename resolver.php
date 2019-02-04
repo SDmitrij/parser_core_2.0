@@ -41,9 +41,14 @@ if (isset($_POST['index']) && $_POST['index'] == true)
                 $indexInfo = $indexing->excludeOrIncludeFilesToIndexAction($filesController->files, $paths);
                 $filesController->setFilesMainDataAction();
                 $indexing->indexAction($filesController->files);
-                $renderData['current_directory_files'] = $paths;
-                $renderData['new_or_modified_files_to_index'] = $indexInfo['new_or_mod_files'];
-                $renderData['hard_deleted_files'] = $indexInfo['deleted_files'];
+
+                $renderData[] = ['paths' => $paths, 'header' =>
+                    ['header_color' => 'green', 'header_name' => 'Current directory files:']];
+                $renderData[] = ['paths' => $indexInfo['new_or_mod_files'], 'header' =>
+                    ['header_color' => 'blue', 'header_name' => 'New or modified files:']];
+                $renderData[] = ['paths' => $indexInfo['deleted_files'], 'header' =>
+                    ['header_color' => 'red', 'header_name' => 'Deleted files:']];
+
             }
         } catch (\Exception $exception) {
             echo $exception->getMessage();

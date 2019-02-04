@@ -213,10 +213,12 @@ class IndexCore
     protected function renderMainArea(array $renderData): string
     {
         // Anon. function that renders an html data of files
-        $htmlGenerator = function (string $key, array $renderData): string {
-            $content = sprintf("<div class='parser-core_%s'><h3 style='color: cornflowerblue'>%s:</h3><ul>", $key,
-                str_replace('_', ' ', $key));
-            foreach ($renderData[$key] as $path)
+        $htmlGenerator = function (array $header, array $paths): string {
+            $color = $header['header_color'];
+            $title = $header['header_name'];
+            $content = sprintf("<div class='parser-core_files_info_log'><h3 style='color:%s'>%s</h3><ul>",
+                $color, $title);
+            foreach ($paths as $path)
             {
                 $content .= sprintf("<li>%s</li>", $path);
             }
@@ -224,19 +226,14 @@ class IndexCore
             return $content;
         };
 
-        // File's data to render
         $htmlContent = '';
         if (!empty($renderData))
         {
-            $renderKeys = array_keys($renderData);
-            foreach ($renderKeys as $renderKey)
-            {
-                if (!empty($renderData[$renderKey]))
-                {
-                    $htmlContent .= $htmlGenerator($renderKey, $renderData);
+            foreach ($renderData as $data) {
+                if (!empty($data['paths'])) {
+                    $htmlContent .= $htmlGenerator($data['header'], $data['paths']);
                 }
             }
-
         } else {
             $htmlContent .=
                 "<div class='parser-core_empty'><h3>There are no files or something wrong with parser!</h3></div>";
