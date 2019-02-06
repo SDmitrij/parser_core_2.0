@@ -14,7 +14,5 @@ It uses namespaces: core - controller class hierarchy
 ![db_structure_strings](https://github.com/SDmitrij/parser_core_2.0/blob/master/images/2019-01-17_13-36-54.png)
 ***
 ### Screenshots that depict working process of my application:
-![src_process](https://github.com/SDmitrij/parser_core_2.0/blob/master/images/2019-01-24_20-35-45.png)
-***
-![src_process_1](https://github.com/SDmitrij/parser_core_2.0/blob/master/images/2019-01-24_20-36-29.png)
+![src_process](https://github.com/SDmitrij/parser_core_2.0/blob/master/images/2019-02-04_23-59-16.png)
 
