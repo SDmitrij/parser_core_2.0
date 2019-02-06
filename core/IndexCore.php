@@ -56,14 +56,16 @@ class IndexCore
                 $this->filesRepo->createTableWords($file->getFileName());
                 foreach ($lines as $line)
                 {
-                    $this->filesRepo->insertIntoTableStrings($file->getFileName(), $file->getFileUniqueKey(), $line, $lineCounter);
+                    $this->filesRepo->insertIntoTableStrings($file->getFileName(), $file->getFileUniqueKey(), $line,
+                        $lineCounter);
 
                     // Get all words of file's string as array
                     $words = str_word_count($line, 1);
 
                     foreach ($words as $word)
                     {
-                        $this->filesRepo->insertIntoTableWords($file->getFileName(), $file->getFileUniqueKey(), $word, $lineCounter);
+                        $this->filesRepo->insertIntoTableWords($file->getFileName(), $file->getFileUniqueKey(), $word,
+                            $lineCounter);
                     }
 
                     $lineCounter += 1;
