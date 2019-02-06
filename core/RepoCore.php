@@ -213,7 +213,7 @@ class RepoCore
             $rows = $query->fetch_all(MYSQLI_ASSOC);
         }
 
-        return $result = $allFiles ? $rows : reset($rows) ;
+        return $result = $allFiles ? $rows : reset($rows);
     }
 
     /**
@@ -229,7 +229,7 @@ class RepoCore
 
         $result = $check->fetch_array(MYSQLI_NUM);
 
-        if ($result != NULL && $result[0] == '1')
+        if ($result != NULL && reset($result) == '1')
         {
             return true;
         } else {
@@ -264,23 +264,18 @@ class RepoCore
         $wordToSrc = $this->DB->real_escape_string($wordToSrc);
         $query = $this->DB->query("SELECT file_unique_key FROM $this->DB_NAME.$this->WRD_PREFIX"."$fileName WHERE word_of_file = '$wordToSrc' LIMIT 1");
         $result = $query->fetch_array(MYSQLI_ASSOC);
-
         if ($result !== NULL)
         {
-
-            $query = $this->DB->query("SELECT num_of_line FROM $this->DB_NAME.$this->WRD_PREFIX"."$fileName WHERE word_of_file = '$wordToSrc'");
             $numLines = [];
+            $query = $this->DB->query("SELECT num_of_line FROM $this->DB_NAME.$this->WRD_PREFIX"."$fileName WHERE word_of_file = '$wordToSrc'");
             for ($i = 0; $i < $query->num_rows; $i++)
             {
-                $numLines[$i] = $query->fetch_array(MYSQLI_NUM)[0];
+                $queryRes = $query->fetch_array(MYSQLI_NUM);
+                $numLines[$i] = reset($queryRes);
             }
-
             $result['num_lines'] = $numLines;
-
             return $result;
-
         } else {
-
             return [];
         }
     }
@@ -299,12 +294,11 @@ class RepoCore
         {
             for ($i = 0; $i < $query->num_rows; $i++)
             {
-                $lines[$i] = $query->fetch_array(MYSQLI_NUM)[0];
+                $queryRes = $query->fetch_array(MYSQLI_NUM);
+                $lines[$i] = reset($queryRes);
             }
-
         }
 
         return $lines;
     }
-
 }
