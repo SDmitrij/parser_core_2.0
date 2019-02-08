@@ -8,7 +8,7 @@ $(function () {
                 dataType: 'json',
                 data: {wordToSearch: sendData},
                 success: function (dataToRender) {
-                    let searchBlock = $('.parser-core_search_results');
+                    var searchBlock = $('.parser-core_search_results');
                     searchBlock.empty();
                     if (dataToRender.length != 0) {
                         for (let key in dataToRender) {
