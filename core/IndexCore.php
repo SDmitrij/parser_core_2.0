@@ -123,8 +123,11 @@ class IndexCore
     {
         $indexInfo = ['deleted_files' => [], 'new_or_mod_files' => []];
         try {
-            // Go through file objects
-            /**@var FileCore $file*/
+
+            /**
+             * Go through file objects
+             * @var FileCore $file
+             */
             foreach ($files as $key => $file)
             {
                 if ($this->filesRepo->checkIfFileAlreadyIndexed($file->getFileUniqueKey()) == true)

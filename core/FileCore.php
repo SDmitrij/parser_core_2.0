@@ -103,7 +103,7 @@ class FileCore
      * @param RepoCore $filesRepo
      * @throws \Exception
      */
-    public function setFileMainData($filesRepo)
+    public function setFileMainData($filesRepo): void
     {
         try {
             $filesRepo
@@ -118,7 +118,7 @@ class FileCore
      * @param int $isIndex
      * @throws \Exception
      */
-    public function setFileRepoIsIndexStatus($filesRepo, int $isIndex)
+    public function setFileRepoIsIndexStatus($filesRepo, int $isIndex): void
     {
         $this->isIndex = $isIndex;
         try {

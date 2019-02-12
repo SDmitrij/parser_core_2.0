@@ -58,7 +58,7 @@ class RepoCore
      */
     public function createRepo(): void
     {
-        $query = $this->DB->query(" CREATE DATABASE IF NOT EXISTS " . $this->DB_NAME . "");
+        $query = $this->DB->query("CREATE DATABASE IF NOT EXISTS $this->DB_NAME CHARSET=utf8");
         if ($query == false)
         {
             throw new \Exception("Failed to create an entry database<br/>");

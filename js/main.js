@@ -1,6 +1,6 @@
 $(function () {
     $('.parser-core_input_send_data').click(function () {
-        let sendData = $('.parser-core_search_by_word_input').val();
+        var sendData = $('.parser-core_search_by_word_input').val();
         if (sendData != null && sendData !== '') {
             $.ajax({
                 url: 'resolver.php',
@@ -21,7 +21,6 @@ $(function () {
                     } else {
                         searchBlock.append("<p><h3 style='color: red'>There are no any matches!</h3></p>")
                     }
-
                 }
             })
         }

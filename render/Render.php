@@ -17,13 +17,16 @@ class Render
     {
         $jsonFilesData = [];
 
+
         // Anon. function to generate strings to render
         $stringsGenerator = function (array $fileStrings, string $word): array {
             $resultStrings = [];
+            //TODO Fix this regexp
+            $regExp = "//i";
+            $toReplace = sprintf("<b style='color: red'>%s</b>", $word);
             foreach ($fileStrings as $fileString)
             {
-                $resultStrings[] = preg_replace(sprintf("/\b%s\b/i", $word),
-                        sprintf("<b style='color: red'>%s</b>", $word), $fileString) . "<br/>";
+                $resultStrings[] = preg_replace($regExp, $toReplace, $fileString) . "<br/>";
             }
             return $resultStrings;
         };
