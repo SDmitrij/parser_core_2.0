@@ -4,16 +4,12 @@ spl_autoload_register('autoLoader');
 
 $dir = __DIR__ . DIRECTORY_SEPARATOR . 'texts';
 
-try {
-    $filesRepo = new \core\RepoCore('localhost', 'root');
-    $indexing = new controller\IndexController();
-    $paths = $indexing->readFolderAction($dir);
-    $filesController = new controller\FileController();
-    $indexing->setFilesRepo($filesRepo);
-    $filesController->initFilesObjects($paths);
-} catch (\Exception $exception) {
-    echo $exception->getMessage();
-}
+$filesRepo = new \core\RepoCore('localhost', 'root');
+$indexing = new controller\IndexController();
+$paths = $indexing->readFolderAction($dir);
+$filesController = new controller\FileController();
+$indexing->setFilesRepo($filesRepo);
+$filesController->initFilesObjects($paths);
 
 // Handle ajax request and invoke search action
 if (isset($_POST['wordToSearch']))
